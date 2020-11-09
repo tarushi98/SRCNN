@@ -1,5 +1,6 @@
 import streamlit as st
 from PIL import Image, ImageOps
+import numpy as np
 from run import predict_image
 st.set_option('deprecation.showfileUploaderEncoding', False)
 st.title("SRCNN")
@@ -11,7 +12,10 @@ if uploaded_file is not None:
     st.image(image, caption='Uploaded Image', use_column_width=True)
     st.write("")
     st.write("Improving Quality..")
-    img = predict_image(image)
-    st.image(img,caption="High Resolution Image")
+    image=image.convert('RGB')
+    image=np.array(image)
+    image = image[:, :, ::-1].copy() 
+    image = predict_image(image)
+    st.image(image,caption="High Resolution Image")
 else:
     st.write("Did you upload yet? If yes, the file wasn't detectable , try again.")
