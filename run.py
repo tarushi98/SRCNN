@@ -21,10 +21,7 @@ def build_model():
 def predict_image(path):
     srcnn=build_model()
     srcnn.load_weights("model-weights/srcnn2.h5")
-    img = cv2.imread(path, cv2.IMREAD_COLOR)
-    img= np.transpose(img, (0, 2, 3, 1))
-    print(img)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
+    img = cv2.cvtColor(path, cv2.COLOR_BGR2YCrCb)
     shape = img.shape
     Y_img = cv2.resize(img[:, :, 0], (int(shape[1] / 2), int(shape[0] /2)), cv2.INTER_CUBIC)
     Y_img = cv2.resize(Y_img, (shape[1], shape[0]), cv2.INTER_CUBIC)
