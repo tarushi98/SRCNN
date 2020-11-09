@@ -1,10 +1,11 @@
 import cv2 
 import numpy as np
+import keras
 from keras.models import Sequential,load_model
 from keras.layers import Conv2D
 from keras.optimizers import Adam
 
-print("Hello")
+#print("Hello")
 
 def build_model():
     srcnn=Sequential()
@@ -20,17 +21,13 @@ def build_model():
 
 def predict_image(path):
     srcnn=build_model()
-    srcnn.load_weights("model-weights/srcnn2.h5")
-    img = cv2.imread(path, cv2.IMREAD_COLOR)
-    img= np.transpose(img, (0, 2, 3, 1))
-    print(img)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
+    srcnn.load_weights("srcnn1.h5")
+    img = cv2.cvtColor(path, cv2.COLOR_BGR2YCrCb)
     shape = img.shape
     Y_img = cv2.resize(img[:, :, 0], (int(shape[1] / 2), int(shape[0] /2)), cv2.INTER_CUBIC)
     Y_img = cv2.resize(Y_img, (shape[1], shape[0]), cv2.INTER_CUBIC)
     img[:, :, 0] = Y_img
     img = cv2.cvtColor(img, cv2.COLOR_YCrCb2BGR)
-
     Y = np.zeros((1, img.shape[0], img.shape[1], 1), dtype=float)
     Y[0, :, :, 0] = Y_img.astype(float) / 255.
     pre = srcnn.predict(Y, batch_size=1) * 255.
